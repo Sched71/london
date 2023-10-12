@@ -26,6 +26,12 @@ struct BMPHeader {
 
 #pragma pack(pop)
 
+/* Передача пикселей отдельно от соответствующего заголовника может быть чревата. Человек,
+ * который будет использовать твой код может не знать, как правильно подбирать заголовок 
+ * к пикселям. Их стоит хранить вместе, поэтому эту задачу лучше всего оформлять в виде
+ * класса, в котором все функции нижу будут методами. Это даст нам инкапсуляцию, которая
+ * не позволит нарушить инварианты. */
+/* Еще следует разделить программу на несколько файлов. Определения функций в cpp, объявления в h */
 // Функция для применения фильтра Гаусса к изображению
 void GaussianFilter(std::vector<unsigned char>& pixels, int width, int height) {
 
@@ -42,7 +48,8 @@ void GaussianFilter(std::vector<unsigned char>& pixels, int width, int height) {
     };
 
     int radius = 2;
-
+    /* Четверной вложенный фор выглядит плохенько. Стоит как-то разделить это: с помощью 
+     * вспомогательной функции или ещё как-то */
     // Цикл по пикселям изображения
     for (int y = radius; y < height - radius; y++) {
         for (int x = radius; x < width - radius; x++) {
@@ -80,6 +87,8 @@ void rotateImage90Degrees(std::vector<unsigned char>& pixels, int width, int hei
         for (int y = 0; y < height; y++) {
             int srcOffset = (y * width + x) * 3;
             int destOffset = ((width - x - 1) * height + y) * 3;
+            /* Мне кажется, что стоило бы завести структуру для Пикселя, чтобы это действие
+             * можно было бы проводить одним присваиванием, а не тремя */
             rotatedPixels[destOffset] = pixels[srcOffset];
             rotatedPixels[destOffset + 1] = pixels[srcOffset + 1];
             rotatedPixels[destOffset + 2] = pixels[srcOffset + 2];
